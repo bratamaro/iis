@@ -1,0 +1,23 @@
+trigger:
+- main  # Define the branch to trigger the pipeline
+
+pool:
+  vmImage: 'windows-latest'  # Specify the Windows image for the build agent
+
+steps:
+- task: CopyFiles@2  # Copy website files to staging directory
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'  # Assuming website files are in the root of the repo
+    Contents: '**'  # Copy all files
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/Website'
+
+- task: IISWebAppManagementOnMachineGroup@0  # Deploy website to IIS
+  inputs:
+    IISDeploymentType: 'IISWebsite'  # Specify deployment type as IIS Website
+    ActionIISWebsite: 'CreateOrUpdateWebsite'  # Action to create or update the website
+    WebsiteName: 'YourWebsiteName'  # Name of your website in IIS
+    WebsitePhysicalPath: '$(Build.ArtifactStagingDirectory)/Website'  # Physical path of the website files
+    AddBinding: true  # Add a binding for the website (e.g., HTTP binding on port 80)
+    CreateOrUpdateAppPoolForWebsite: true  # Create or update the application pool for the website
+    AppPoolNameForWebsite: 'YourAppPoolName'  # Name of the application pool
+    DotNetVersionForAppPool: 'v4.0'  # .NET version for the application pool (if applicable)
