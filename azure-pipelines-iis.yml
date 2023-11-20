@@ -9,7 +9,8 @@ steps:
   inputs:
     buildType: 'current'
     downloadType: 'single'
-    artifactName: 'website-artifact'  # Replace with your artifact name
+    #artifactName: 'website-artifact'  # Replace with your artifact name
+    artifactName: 'MyWebSite-02'  # Replace with your artifact name
     downloadPath: '$(Build.ArtifactStagingDirectory)'
 
 - task: IISWebAppManagementOnMachineGroup@0  # Deploy website to IIS
