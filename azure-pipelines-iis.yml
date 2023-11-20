@@ -42,7 +42,7 @@ steps:
     targetType: 'inline'
     script: |
       # Set website path and location
-      $websitePath = "C:\inetpub\wwwroot\Website"
+      $websitePath = "C:\inetpub\wwwroot\Website\"
       $sourcePath = "$(System.ArtifactsDirectory)\drop"  # Assuming the artifact contains your website files
 
       # Remove existing files from the website directory
