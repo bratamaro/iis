@@ -18,7 +18,7 @@ steps:
     ActionIISWebsite: 'CreateOrUpdateWebsite'  # Action to create or update the website
     WebsiteName: 'MyWebSite-02'  # Name of your website in IIS
     WebsitePhysicalPath: '$(Build.ArtifactStagingDirectory)'  # Physical path of the website files
-    AddBinding: true  # Add a binding for the website (e.g., HTTP binding on port 80)
+    AddBinding: false  # Add a binding for the website (e.g., HTTP binding on port 80)
     CreateOrUpdateAppPoolForWebsite: true  # Create or update the application pool for the website
     AppPoolNameForWebsite: 'MyWebSite-02'  # Name of the application pool
     DotNetVersionForAppPool: 'v4.0'  # .NET version for the application pool (if applicable)
