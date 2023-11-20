@@ -5,27 +5,20 @@ pool:
   vmImage: 'windows-latest'  # Specify the Windows image for the build agent
 
 steps:
-- task: CopyFiles@2  # Copy website files to staging directory
+- task: DownloadBuildArtifacts@0  # Download the artifact containing website files
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)'  # Assuming website files are in the root of the repo
-    Contents: '**'  # Copy all files
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/Website'
+    buildType: 'current'
+    downloadType: 'single'
+    artifactName: 'website-artifact'  # Replace with your artifact name
+    downloadPath: '$(Build.ArtifactStagingDirectory)'
 
 - task: IISWebAppManagementOnMachineGroup@0  # Deploy website to IIS
   inputs:
     IISDeploymentType: 'IISWebsite'  # Specify deployment type as IIS Website
     ActionIISWebsite: 'CreateOrUpdateWebsite'  # Action to create or update the website
-    WebsiteName: 'Website'  # Name of your website in IIS
-    #WebsiteName: 'MyWebSite-01'  # Name of your website in IIS
-    #WebsitePhysicalPath: '$(Build.ArtifactStagingDirectory)/Website'  # Physical path of the website files
-    WebsitePhysicalPath: '$(Build.ArtifactStagingDirectory)/Website'
-    AddBinding: false  # Add a binding for the website (e.g., HTTP binding on port 80)
+    WebsiteName: 'MyWebSite-02'  # Name of your website in IIS
+    WebsitePhysicalPath: '$(Build.ArtifactStagingDirectory)'  # Physical path of the website files
+    AddBinding: true  # Add a binding for the website (e.g., HTTP binding on port 80)
     CreateOrUpdateAppPoolForWebsite: true  # Create or update the application pool for the website
-    AppPoolNameForWebsite: 'Website'  # Name of the application pool
-    #AppPoolNameForWebsite: 'MyWebSite-01'  # Name of the application pool
+    AppPoolNameForWebsite: 'MyWebSite-02'  # Name of the application pool
     DotNetVersionForAppPool: 'v4.0'  # .NET version for the application pool (if applicable)
-
-      Remove-Item -Path $websitePath\* -Recurse -Force
-
-      # Copy files to the website directory
-      Copy-Item -Path $sourcePath\* -Destination $websitePath -Recurse -Force
