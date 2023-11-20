@@ -1,24 +1,52 @@
+#trigger:
+#- main  # Define the branch to trigger the pipeline
+
+#pool:
+#  vmImage: 'windows-latest'  # Specify the Windows image for the build agent
+
+#steps:
+#- task: CopyFiles@2  # Copy website files to staging directory
+#  inputs:
+#    SourceFolder: '$(Build.SourcesDirectory)'  # Assuming website files are in the root of the repo
+#    Contents: '**'  # Copy all files
+#    TargetFolder: '$(Build.ArtifactStagingDirectory)/Website'
+
+#- task: IISWebAppManagementOnMachineGroup@0  # Deploy website to IIS
+#  inputs:
+#    IISDeploymentType: 'IISWebsite'  # Specify deployment type as IIS Website
+#    ActionIISWebsite: 'CreateOrUpdateWebsite'  # Action to create or update the website
+#    WebsiteName: 'MyWebSite-01'  # Name of your website in IIS
+    #WebsitePhysicalPath: '$(Build.ArtifactStagingDirectory)/Website'  # Physical path of the website files
+#    WebsitePhysicalPath: '$(Build.ArtifactStagingDirectory)/MyWebSite-01'
+#    AddBinding: false  # Add a binding for the website (e.g., HTTP binding on port 80)
+#    CreateOrUpdateAppPoolForWebsite: true  # Create or update the application pool for the website
+#    AppPoolNameForWebsite: 'MyWebSite-01'  # Name of the application pool
+#    DotNetVersionForAppPool: 'v4.0'  # .NET version for the application pool (if applicable)
+
 trigger:
-- main  # Define the branch to trigger the pipeline
+- main
 
 pool:
-  vmImage: 'windows-latest'  # Specify the Windows image for the build agent
+  vmImage: 'windows-latest'
 
 steps:
-- task: CopyFiles@2  # Copy website files to staging directory
+- task: DownloadBuildArtifacts@0
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)'  # Assuming website files are in the root of the repo
-    Contents: '**'  # Copy all files
-    TargetFolder: '$(Build.ArtifactStagingDirectory)/Website'
+    buildType: 'current'
+    downloadType: 'single'
+    artifactName: 'drop'
+    downloadPath: '$(System.ArtifactsDirectory)'
 
-- task: IISWebAppManagementOnMachineGroup@0  # Deploy website to IIS
+- task: PowerShell@2
   inputs:
-    IISDeploymentType: 'IISWebsite'  # Specify deployment type as IIS Website
-    ActionIISWebsite: 'CreateOrUpdateWebsite'  # Action to create or update the website
-    WebsiteName: 'MyWebSite-01'  # Name of your website in IIS
-    #WebsitePhysicalPath: '$(Build.ArtifactStagingDirectory)/Website'  # Physical path of the website files
-    WebsitePhysicalPath: '$(Build.ArtifactStagingDirectory)/MyWebSite-01'
-    AddBinding: false  # Add a binding for the website (e.g., HTTP binding on port 80)
-    CreateOrUpdateAppPoolForWebsite: true  # Create or update the application pool for the website
-    AppPoolNameForWebsite: 'MyWebSite-01'  # Name of the application pool
-    DotNetVersionForAppPool: 'v4.0'  # .NET version for the application pool (if applicable)
+    targetType: 'inline'
+    script: |
+      # Set website path and location
+      $websitePath = "C:\inetpub\wwwroot\Website"
+      $sourcePath = "$(System.ArtifactsDirectory)\drop"  # Assuming the artifact contains your website files
+
+      # Remove existing files from the website directory
+      Remove-Item -Path $websitePath\* -Recurse -Force
+
+      # Copy files to the website directory
+      Copy-Item -Path $sourcePath\* -Destination $websitePath -Recurse -Force
