@@ -18,7 +18,7 @@ steps:
     WebsiteName: 'MyWebSite-01'  # Name of your website in IIS
     #WebsitePhysicalPath: '$(Build.ArtifactStagingDirectory)/Website'  # Physical path of the website files
     WebsitePhysicalPath: '$(Build.ArtifactStagingDirectory)/MyWebSite-01'
-    AddBinding: true  # Add a binding for the website (e.g., HTTP binding on port 80)
+    AddBinding: false  # Add a binding for the website (e.g., HTTP binding on port 80)
     CreateOrUpdateAppPoolForWebsite: true  # Create or update the application pool for the website
     AppPoolNameForWebsite: 'MyWebSite-01'  # Name of the application pool
     DotNetVersionForAppPool: 'v4.0'  # .NET version for the application pool (if applicable)
