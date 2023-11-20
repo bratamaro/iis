@@ -35,7 +35,7 @@ steps:
     buildType: 'current'
     downloadType: 'single'
     artifactName: 'drop'
-    downloadPath: '$(System.ArtifactsDirectory)'
+    downloadPath: 'C:\inetpub\wwwroot\Website\'
 
 - task: PowerShell@2
   inputs:
